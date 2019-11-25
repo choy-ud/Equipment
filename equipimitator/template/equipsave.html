@@ -1,0 +1,100 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Equipment-Imitator</title>
+    <link rel="stylesheet" href="{% static 'css/equipsave.css' %}" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="{% static 'JS/jquery.min.js' %}"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </head>
+    <body>
+        <main class="main">
+            <div class="panel panel-info equip_set">
+              <div class="panel-heading"><h4>出装信息</h4></div>
+                <div class="panel-body set_list">
+                    <div class="panel panel-danger">
+                      <div class="panel-body">
+                        {% for i in e_list %}
+                            <div class="set_item"><img class="list_item_pic" src="{{ i.e_pic }}"/></div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <div class="panel panel-success">
+                      <div class="panel-body">
+                        <h3 class="equip_attri_icon"><a title="装备价格"><span class="glyphicon glyphicon-usd"/></a></h3>
+                        <h4 class="equip_price"><span class="label label-success">  总价：{{p_total}} &nbsp; 售价：{{tp_total}}</span></h4>
+                    </div>
+                    </div>
+                    <div class="panel panel-warning equip_info">
+                      <div class="panel-body">
+                        <h3 class="equip_attri_icon"><a title="装备属性"><span class="glyphicon glyphicon-cog"/></a></h3>
+                          {% for j in asum_list %}
+                            <h4 class="equip_attri"><span class="label label-warning">               
+                               {{ j }} 
+                            </span></h4>
+                          {% endfor %}
+                      </div>
+                    </div>
+                    <div class="panel panel-primary equip_skill">
+                      <div class="panel-body">
+                        <h3 class="equip_attri_icon"><a title="装备技能"><span class="glyphicon glyphicon-tint"/></a></h3>
+                      <div class="skill_list">
+                          {% for k in sk_list %}
+                            <h4 class="equip_skill"><p><span class="label label-primary skill_contain">               
+                               {{ k.sk_no.sk_name}}（{{k.sk_no.sk_type}}）
+                            </span></h4>{{k.sk_no.sk_describe}}</p>
+                          {% endfor %}
+                      </div>
+                      </div>
+                    </div>
+                    <div>
+                        <a href="{% url 'yourImitator' %}"><button type="button" class="btn btn-success return_btn"><span class="glyphicon glyphicon-menu-left"/>&nbsp;返回</button></a>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-floppy-save"/>&nbsp;保存</button>
+                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">请输入出装名称</h4>
+
+                              </div>
+                              <form action="{% url 'equipsaveover' %}" method="post">
+                              <div class="modal-body">
+                                <input type="hidden" class="form-control" name="items" value="{% for i in e_list %}{{i.e_no}},{% endfor %}">
+                                <input type="text" class="form-control" name="name" onkeyup="checkLength(this);">
+                                <script type="text/javascript">
+                                function checkLength(which) {
+                                    var maxChars = 10; //
+                                    if (which.value.length > maxChars)
+                                    {
+                                        alert("请将装备名称限制在10个汉字以内！");
+                                        // 超过限制的字数了就将 文本框中的内容按规定的字数 截取
+                                        which.value = which.value.substring(0,maxChars);
+                                        return false;
+                                    }
+                                    else
+                                    {
+                                        var curr = maxChars - which.value.length; //250 减去 当前输入的
+                                        document.getElementByIdx_x("sy").innerHTML = curr.toString();
+                                        return true;
+                                    }
+                                }
+                               </script>
+                                
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" onclick="this.form.submit()">保存</button>
+                              </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

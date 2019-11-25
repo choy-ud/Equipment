@@ -1,0 +1,117 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Equipment-Imitator</title>
+    <link rel="stylesheet" href="{% static 'css/equipitem.css' %}" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="{% static 'JS/jquery.min.js' %}"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script>
+        $(function () { $("[data-toggle='tooltip']").tooltip(); });
+    </script>
+  </head>
+    <body>
+        <nav class="navbar navbar-default">
+        <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index/"><span class="glyphicon glyphicon-book"/>&nbsp;Equipment-Imitator</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+          {% if request.user.is_authenticated %}
+            <li><a href="{% url 'yourImitator' %}"><span class="glyphicon glyphicon-cog"/>&nbsp;模拟</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="glyphicon glyphicon-user"/>&nbsp;{{request.user.username}}
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'yourIndex' %}"><span class=" glyphicon glyphicon-home"/>&nbsp;个人中心</a></li>
+                <li><a href="{% url 'login_out' %}"><span class="glyphicon glyphicon-off"/>&nbsp;退出</a></li>
+              </ul>
+            </li>         
+          {% else %}
+            <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"/>&nbsp;登录</a></li>
+            <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-list-alt"/>&nbsp;注册</a></li>
+          {% endif %}
+            <li><a href="{% url 'aboutAuthor' %}"><span class="glyphicon glyphicon-bookmark"/>&nbsp;关于作者</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+        </nav>
+        <main class="main">
+             <div class="panel panel-default">
+              <div class="panel-heading parent_item_name"><h3>{{item.e_name}}</h3></div>
+              <div class="panel-body item_panel">
+                <div class="panel panel-danger parent_item">
+                  <div class="panel-body">
+                    <div class="parent_item_pic_panel">
+                        <img class="parent_item_pic" src="{{ item.e_pic }}"></img>
+                    </div>
+                    <p>总价：{{item.e_price}}&nbsp;售价：{{item.e_tprice}}</p>
+                    <p>
+                    {% for a in ta_list %}
+                        {% if a.e_no == item %}
+                            {{ a.e_ano.e_aname }} + {{ a.e_adata }}</br>
+                        {% endif %}
+                    {% endfor %}
+                    </p>
+                    {% for sk in tsk_list %}
+                        {% if sk.e_no == item %}
+                            <p>{{ sk.sk_no.sk_type }}
+                            {% if sk.sk_no.sk_name %}
+                            —{{ sk.sk_no.sk_name }}
+                            {% endif %}
+                            ：{{ sk.sk_no.sk_describe }}</p>
+                        {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+                <p class="child_item_label">合成途径：</p>
+                {% for sy in sy_list %}
+                    {% if sy.e_parentno == item %}
+                        <div class="panel panel-warning child_item">
+                          <div class="panel-body">
+                            <a href="/equipitem/?e_no={{sy.e_childno.e_no}}" data-placement="bottom">
+                                <h4 class="child_item_name">{{ sy.e_childno.e_name }} * {{sy.e_num}}</h4>
+                            </a>
+                            <div class="child_item_pic_panel">
+                                <img class="child_item_pic" src="{{ sy.e_childno.e_pic }}"></img>
+                            </div>
+                            <p>总价：{{sy.e_childno.e_price}}&nbsp;售价：{{sy.e_childno.e_tprice}}</p>
+                            <p>
+                            {% for a in ta_list %}
+                                {% if a.e_no == sy.e_childno %}
+                                    {{ a.e_ano.e_aname }} + {{ a.e_adata }}</br>
+                                {% endif %}
+                            {% endfor %}
+                            </p>
+                            {% for sk in tsk_list %}
+                                {% if sk.e_no == sy.e_childno %}
+                                    <p>{{ sk.sk_no.sk_type }}
+                                    {% if sk.sk_no.sk_name %}
+                                    —{{ sk.sk_no.sk_name }}
+                                    {% endif %}
+                                    ：{{ sk.sk_no.sk_describe }}</p>
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+        </main>
+    </body>
+</html>

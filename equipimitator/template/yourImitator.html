@@ -1,0 +1,352 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Equipment-Imitator</title>
+    <link rel="stylesheet" href="{% static 'css/yourImitator.css' %}" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="{% static 'JS/jquery.min.js' %}"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </head>
+    <body>
+        <nav class="navbar navbar-default">
+        <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index/"><span class="glyphicon glyphicon-book"/>&nbsp;Equipment-Imitator</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+          {% if request.user.is_authenticated %}
+            <li><a href="{% url 'yourImitator' %}"><span class="glyphicon glyphicon-cog"/>&nbsp;模拟</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="glyphicon glyphicon-user"/>&nbsp;{{request.user.username}}
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'yourIndex' %}"><span class=" glyphicon glyphicon-home"/>&nbsp;个人中心</a></li>
+                <li><a href="{% url 'login_out' %}"><span class="glyphicon glyphicon-off"/>&nbsp;退出</a></li>
+              </ul>
+            </li>         
+          {% else %}
+            <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"/>&nbsp;登录</a></li>
+            <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-list-alt"/>&nbsp;注册</a></li>
+          {% endif %}
+            <li><a href="{% url 'aboutAuthor' %}"><span class="glyphicon glyphicon-bookmark"/>&nbsp;关于作者</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+        </nav>
+        <main class="main">      
+            <div>
+             <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#all" role="tab" data-toggle="tab">全部</a></li>
+                <li role="presentation"><a href="#atk" role="tab" data-toggle="tab">攻击</a></li>
+                <li role="presentation"><a href="#mat" role="tab" data-toggle="tab">法术</a></li>
+                <li role="presentation"><a href="#def" role="tab" data-toggle="tab">防御</a></li>
+                <li role="presentation"><a href="#mov" role="tab" data-toggle="tab">移动</a></li>
+                <li role="presentation"><a href="#jun" role="tab" data-toggle="tab">打野</a></li>
+                <li role="presentation"><a href="#ast" role="tab" data-toggle="tab">辅助</a></li>
+             </ul>
+            </div>
+            <div class = "panel panel-default">
+              <div class="tab-content choice_list">
+              <div role="tabpanel" class="tab-pane active" id="all">
+                  {% for i in e_list %}
+                        <div class="panel panel-default list_item">
+                          <div class="panel-body">
+                                <input class="item_no" value="{{i.e_no}}" hidden>
+                                <h4 class="list_item_name">{{ i.e_name }}&nbsp;<a href="#" class="add_set"><span class="glyphicon glyphicon-plus"/></a></h4>
+                            <div class="list_item_pic_panel">
+                                <a href="#" class="add_set"><img class="list_item_pic" src="{{ i.e_pic }}"></img></a>
+                            </div>
+                            <p>总价：{{i.e_price}}&nbsp;售价：{{i.e_tprice}}</p>
+                            <p>
+                            {% for a in ta_list %}
+                                {% if a.e_no == i %}
+                                    {{ a.e_ano.e_aname }} + {{ a.e_adata }}</br>
+                                {% endif %}
+                            {% endfor %}
+                            </p>
+                            {% for sk in tsk_list %}
+                                {% if sk.e_no == i %}
+                                    <p>{{ sk.sk_no.sk_type }}
+                                    {% if sk.sk_no.sk_name %}
+                                    —{{ sk.sk_no.sk_name }}
+                                    {% endif %}
+                                    ：{{ sk.sk_no.sk_describe }}</p>
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                        </div>
+                  {% endfor %}
+                  </div>
+                  <div role="tabpanel" class="tab-pane" id="atk">
+                  {% for i in e_list %}
+                        {% if i.e_type == '攻击'%}
+                        <div class="panel panel-default list_item">
+                          <div class="panel-body">
+                            <input class="item_no" value="{{i.e_no}}" hidden>
+                                <h4 class="list_item_name">{{ i.e_name }}&nbsp;<a href="#" class="add_set"><span class="glyphicon glyphicon-plus"/></a></h4>
+                            <div class="list_item_pic_panel">
+                                <a href="#" class="add_set"><img class="list_item_pic" src="{{ i.e_pic }}"></img></a>
+                            </div>
+                            <p>总价：{{i.e_price}}&nbsp;售价：{{i.e_tprice}}</p>
+                            <p>
+                            {% for a in ta_list %}
+                                {% if a.e_no == i %}
+                                    {{ a.e_ano.e_aname }} + {{ a.e_adata }}</br>
+                                {% endif %}
+                            {% endfor %}
+                            </p>
+                            {% for sk in tsk_list %}
+                                {% if sk.e_no == i %}
+                                    <p>{{ sk.sk_no.sk_type }}
+                                    {% if sk.sk_no.sk_name %}
+                                    —{{ sk.sk_no.sk_name }}
+                                    {% endif %}
+                                    ：{{ sk.sk_no.sk_describe }}</p>
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                        </div>
+                        {% endif %}
+                  {% endfor %}
+                  </div>
+                  <div role="tabpanel" class="tab-pane active" id="mat">
+                  {% for i in e_list %}
+                        {% if i.e_type == '法术'%}
+                        <div class="panel panel-default list_item">
+                          <div class="panel-body">
+                                <input class="item_no" value="{{i.e_no}}" hidden>
+                                <h4 class="list_item_name">{{ i.e_name }}&nbsp;<a href="#" class="add_set"><span class="glyphicon glyphicon-plus"/></a></h4>
+                            <div class="list_item_pic_panel">
+                                <a href="#" class="add_set"><img class="list_item_pic" src="{{ i.e_pic }}"></img></a>
+                            </div>
+                            <p>总价：{{i.e_price}}&nbsp;售价：{{i.e_tprice}}</p>
+                            <p>
+                            {% for a in ta_list %}
+                                {% if a.e_no == i %}
+                                    {{ a.e_ano.e_aname }} + {{ a.e_adata }}</br>
+                                {% endif %}
+                            {% endfor %}
+                            </p>
+                            {% for sk in tsk_list %}
+                                {% if sk.e_no == i %}
+                                    <p>{{ sk.sk_no.sk_type }}
+                                    {% if sk.sk_no.sk_name %}
+                                    —{{ sk.sk_no.sk_name }}
+                                    {% endif %}
+                                    ：{{ sk.sk_no.sk_describe }}</p>
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                        </div>
+                        {% endif %}
+                  {% endfor %}
+                  </div>
+                  <div role="tabpanel" class="tab-pane active" id="def">
+                  {% for i in e_list %}
+                        {% if i.e_type == '防御'%}
+                        <div class="panel panel-default list_item">
+                          <div class="panel-body">
+                                <input class="item_no" value="{{i.e_no}}" hidden>
+                                <h4 class="list_item_name">{{ i.e_name }}&nbsp;<a href="#" class="add_set"><span class="glyphicon glyphicon-plus"/></a></h4>
+                            <div class="list_item_pic_panel">
+                                <a href="#" class="add_set"><img class="list_item_pic" src="{{ i.e_pic }}"></img></a>
+                            </div>
+                            <p>总价：{{i.e_price}}&nbsp;售价：{{i.e_tprice}}</p>
+                            <p>
+                            {% for a in ta_list %}
+                                {% if a.e_no == i %}
+                                    {{ a.e_ano.e_aname }} + {{ a.e_adata }}</br>
+                                {% endif %}
+                            {% endfor %}
+                            </p>
+                            {% for sk in tsk_list %}
+                                {% if sk.e_no == i %}
+                                    <p>{{ sk.sk_no.sk_type }}
+                                    {% if sk.sk_no.sk_name %}
+                                    —{{ sk.sk_no.sk_name }}
+                                    {% endif %}
+                                    ：{{ sk.sk_no.sk_describe }}</p>
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                        </div>
+                        {% endif %}
+                  {% endfor %}
+                  </div>
+                  <div role="tabpanel" class="tab-pane active" id="mov">
+                  {% for i in e_list %}
+                        {% if i.e_type == '移动'%}
+                        <div class="panel panel-default list_item">
+                          <div class="panel-body">
+                                <input class="item_no" value="{{i.e_no}}" hidden>
+                                <h4 class="list_item_name">{{ i.e_name }}&nbsp;<a href="#"  class="add_set"><span class="glyphicon glyphicon-plus"/></a></h4>
+                            <div class="list_item_pic_panel">
+                                <a href="#" class="add_set"><img class="list_item_pic" src="{{ i.e_pic }}"></img></a>
+                            </div>
+                            <p>总价：{{i.e_price}}&nbsp;售价：{{i.e_tprice}}</p>
+                            <p>
+                            {% for a in ta_list %}
+                                {% if a.e_no == i %}
+                                    {{ a.e_ano.e_aname }} + {{ a.e_adata }}</br>
+                                {% endif %}
+                            {% endfor %}
+                            </p>
+                            {% for sk in tsk_list %}
+                                {% if sk.e_no == i %}
+                                    <p>{{ sk.sk_no.sk_type }}
+                                    {% if sk.sk_no.sk_name %}
+                                    —{{ sk.sk_no.sk_name }}
+                                    {% endif %}
+                                    ：{{ sk.sk_no.sk_describe }}</p>
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                        </div>
+                        {% endif %}
+                  {% endfor %}
+                  </div>
+                  <div role="tabpanel" class="tab-pane active" id="jun">
+                  {% for i in e_list %}
+                        {% if i.e_type == '打野'%}
+                        <div class="panel panel-default list_item">
+                          <div class="panel-body">
+                                <input class="item_no" value="{{i.e_no}}" hidden>
+                                <h4 class="list_item_name">{{ i.e_name }}&nbsp;<a href="#"  class="add_set"><span class="glyphicon glyphicon-plus"/></a></h4>
+                            <div class="list_item_pic_panel">
+                                <a href="#"  class="add_set"><img class="list_item_pic" src="{{ i.e_pic }}"></img></a>
+                            </div>
+                            <p>总价：{{i.e_price}}&nbsp;售价：{{i.e_tprice}}</p>
+                            <p>
+                            {% for a in ta_list %}
+                                {% if a.e_no == i %}
+                                    {{ a.e_ano.e_aname }} + {{ a.e_adata }}</br>
+                                {% endif %}
+                            {% endfor %}
+                            </p>
+                            {% for sk in tsk_list %}
+                                {% if sk.e_no == i %}
+                                    <p>{{ sk.sk_no.sk_type }}
+                                    {% if sk.sk_no.sk_name %}
+                                    —{{ sk.sk_no.sk_name }}
+                                    {% endif %}
+                                    ：{{ sk.sk_no.sk_describe }}</p>
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                        </div>
+                        {% endif %}
+                  {% endfor %}
+                  </div>
+                  <div role="tabpanel" class="tab-pane active" id="ast">
+                  {% for i in e_list %}
+                        {% if i.e_type == '辅助'%}
+                        <div class="panel panel-default list_item">
+                          <div class="panel-body">
+                                <input class="item_no" value="{{i.e_no}}" hidden>
+                                <h4 class="list_item_name">{{ i.e_name }}&nbsp;<a href="#"  class="add_set"><span class="glyphicon glyphicon-plus"/></a></h4>
+                            <div class="list_item_pic_panel">
+                                <a href="#" class="add_set"><img class="list_item_pic" src="{{ i.e_pic }}"></img></a>
+                            </div>
+                            <p>总价：{{i.e_price}}&nbsp;售价：{{i.e_tprice}}</p>
+                            <p>
+                            {% for a in ta_list %}
+                                {% if a.e_no == i %}
+                                    {{ a.e_ano.e_aname }} + {{ a.e_adata }}</br>
+                                {% endif %}
+                            {% endfor %}
+                            </p>
+                            {% for sk in tsk_list %}
+                                {% if sk.e_no == i %}
+                                    <p>{{ sk.sk_no.sk_type }}
+                                    {% if sk.sk_no.sk_name %}
+                                    —{{ sk.sk_no.sk_name }}
+                                    {% endif %}
+                                    ：{{ sk.sk_no.sk_describe }}</p>
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                        </div>
+                        {% endif %}
+                  {% endfor %}
+                  </div>
+              </div>
+           </div>
+           <div class="panel panel-default equip_set">
+              <div class="panel-heading"><b>装备栏</b></div>
+              <form action="{% url 'equipsave' %}" method = "post">
+                  <div class="panel-body set_list">
+                    <a class="set_item_clear" href="#" title="点击删除此项装备"><input type="text" id="no1" name="no1" value="" hidden><div class="set_item" id="item1"></div></a>
+                    <a class="set_item_clear" href="#" title="点击删除此项装备"><input type="text" id="no2" name="no2" value="" hidden><div class="set_item" id="item2"></div></a>
+                    <a class="set_item_clear" href="#" title="点击删除此项装备"><input type="text" id="no3" name="no3" value="" hidden><div class="set_item" id="item3"></div></a>
+                    <a class="set_item_clear" href="#" title="点击删除此项装备"><input type="text" id="no4" name="no4" value="" hidden><div class="set_item" id="item4"></div></a>
+                    <a class="set_item_clear" href="#" title="点击删除此项装备"><input type="text" id="no5" name="no5" value="" hidden><div class="set_item" id="item5"></div></a>
+                    <a class="set_item_clear" href="#" title="点击删除此项装备"><input type="text" id="no6" name="no6" value="" hidden><div class="set_item" id="item6"></div></a>
+                        <script>
+                            $('.set_item_clear').click(function(){
+                                $(this).find("div").empty();
+                                $(this).find("input").val("");
+                            });
+                        </script>
+                    <div class="set_option">
+                        <a id="set_clear"><button class="btn btn-danger"><span class="glyphicon glyphicon-trash"/>&nbsp;清除</button></a>
+                        <script>
+                            $('#set_clear').click(function(){
+                                $(".set_item").empty();
+                                $(".set_item_clear").find("input").val("");
+                            });
+                        </script>
+                        <button class="btn btn-info" onclick="this.form.submit()"><span class="glyphicon glyphicon-floppy-saved"/>&nbsp;保存</button>
+                    </div>
+                  </div>
+              </form>
+              <script> 
+              $('.add_set').click(function(){
+                var item = $(this).parent().parent();
+                var value = item.find(".item_no").val();
+                var pic = item.find("img");
+                if($("#item1").find("img").length == 0){
+                    $("#item1").append(pic.clone());
+                    $("#no1").val(value);
+                    }
+                else if($("#item2").find("img").length == 0){
+                    $("#item2").append(pic.clone());
+                    $("#no2").val(value);
+                    }
+                else if($("#item3").find("img").length == 0){
+                    $("#item3").append(pic.clone());
+                    $("#no3").val(value);
+                    }
+                else if($("#item4").find("img").length == 0){
+                    $("#item4").append(pic.clone());
+                    $("#no4").val(value);
+                    }
+                else if($("#item5").find("img").length == 0){
+                    $("#item5").append(pic.clone());
+                    $("#no5").val(value);
+                    }
+                else if($("#item6").find("img").length == 0){
+                    $("#item6").append(pic.clone());
+                    $("#no6").val(value);
+                    }
+                else
+                    alert("装备栏已满！");
+                });
+              </script>
+           </div>
+        </main>
+    </body>
+</html>

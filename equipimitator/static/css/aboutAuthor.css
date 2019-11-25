@@ -1,0 +1,24 @@
+.main
+{
+    width:1235px;
+    margin:auto;
+    margin-top:170px;
+}
+.author_info
+{
+    margin-left:350px;
+    color:orange;
+    font-size:18px;
+}
+.author_connect
+{
+    margin-left:350px;
+    color:purple;
+    font-size:18px;
+}
+.author_other
+{
+    margin-left:350px;
+    color:red;
+    font-size:18px;
+}

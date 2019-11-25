@@ -1,0 +1,117 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Equipment-Imitator</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="{% static 'JS/jquery.min.js' %}"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script>
+        $(function () { $("[data-toggle='tooltip']").tooltip(); });
+    </script>
+  </head>
+    <body>
+        <nav class="navbar navbar-default">
+        <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/imitator/index/"><span class="glyphicon glyphicon-book"/>&nbsp;Equipment-Imitator</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="glyphicon glyphicon-th"/>&nbsp;{{type}}
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="/index/?type=全部" class="menu_type">全部</a></li>
+                <li><a href="/index/?type=攻击" class="menu_type">攻击</a></li>
+                <li><a href="/index/?type=法术" class="menu_type">法术</a></li>
+                <li><a href="/index/?type=防御" class="menu_type">防御</a></li>
+                <li><a href="/index/?type=移动" class="menu_type">移动</a></li>
+                <li><a href="/index/?type=打野" class="menu_type">打野</a></li>
+                <li><a href="/index/?type=辅助" class="menu_type">辅助</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="navbar-form navbar-left">
+              <input type="text" class="form-control" placeholder="输入装备名称搜索" id="search" name="search">
+            <button class="btn btn-default" onclick="search()"><span class="glyphicon glyphicon-search"/>&nbsp;搜索</button>
+          </form>
+          <ul class="nav navbar-nav navbar-right">
+          {% if request.user.is_authenticated %}
+            <li><a href="{% url 'yourImitator' %}"><span class="glyphicon glyphicon-cog"/>&nbsp;模拟</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="glyphicon glyphicon-user"/>&nbsp;{{request.user.username}}
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'yourIndex' %}"><span class=" glyphicon glyphicon-home"/>&nbsp;个人中心</a></li>
+                <li><a href="{% url 'login_out' %}"><span class="glyphicon glyphicon-off"/>&nbsp;退出</a></li>
+              </ul>
+            </li>         
+          {% else %}
+            <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"/>&nbsp;登录</a></li>
+            <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-list-alt"/>&nbsp;注册</a></li>
+          {% endif %}
+            <li><a href="{% url 'aboutAuthor' %}"><span class="glyphicon glyphicon-bookmark"/>&nbsp;关于作者</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+        </nav>
+        <main class="main">
+            <div class="panel panel-default list_panel">
+              <div class="panel-heading"><b>{{search}}{{type}}</b></div>
+              <div class="panel-body list_container ">
+              {% for i in e_list %}
+                <div class="panel panel-default list_item">
+                  <div class="panel-body">
+                    <a href=" /equipitem/?e_no={{i.e_no}} " data-toggle="tooltip" data-placement="bottom" title="
+                    合成途径&nbsp;
+                     {% for sy in sy_list %}
+                        {% if sy.e_parentno == i %}
+                            {{sy.e_childno.e_name}} * {{ sy.e_num }}&nbsp;
+                        {% endif %}
+                     {% endfor %}
+                    ">
+                        <h4 class="list_item_name">{{ i.e_name }}</h4>
+                    </a>
+                    <div class="list_item_pic_panel">
+                        <img class="list_item_pic" src="{{ i.e_pic }}"></img>
+                    </div>
+                    <p>总价：{{i.e_price}}&nbsp;售价：{{i.e_tprice}}</p>
+                    <p>
+                    {% for a in ta_list %}
+                        {% if a.e_no == i %}
+                            {{ a.e_ano.e_aname }} + {{ a.e_adata }}</br>
+                        {% endif %}
+                    {% endfor %}
+                    </p>
+                    {% for sk in tsk_list %}
+                        {% if sk.e_no == i %}
+                            <p>{{ sk.sk_no.sk_type }}
+                            {% if sk.sk_no.sk_name %}
+                            —{{ sk.sk_no.sk_name }}
+                            {% endif %}
+                            ：{{ sk.sk_no.sk_describe }}</p>
+                        {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endfor %}
+              </div>
+            </div>
+        </main>
+    </body>
+</html>

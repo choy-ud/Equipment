@@ -1,0 +1,36 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Equipment-Imitator</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="{% static 'JS/jquery.min.js' %}"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </head>
+    <body>
+        <div class="panel panel-default login_panel">
+          <div class="panel-heading">
+            <h3 class="panel-title">登录</h3>
+          </div>
+          <div class="panel-body">
+            <form action={% url 'login_post' %} method = "post">
+            {% csrf_token %}
+                <div class="input-group login_input">
+                  <span class="input-group-addon" id="basic-addon1">昵称</span>
+                  <input type="text" class="form-control" placeholder="Nickname" aria-describedby="basic-addon1" name="username" value="{{ username }}">
+                </div>
+                <div class="input-group login_input">
+                  <span class="input-group-addon" id="basic-addon1">密码</span>
+                  <input type="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1" name="password" value="{{ password }}" autocomplete="off">
+                </div>
+                <p  class="login_other" style="color:red;">{{msg}}</p>
+                <p class="login_other"><a href="{% url 'register' %}">还没有账号？前往注册</a>&nbsp; &nbsp;<a href="/imitator/index/?type=全部" class="menu_type">不想注册？前往首页</a></p>
+                <button type="button" class="btn btn-default" onclick="this.form.submit()">登录</button>
+            </form>
+          </div>
+        </div>
+    </body>
+</html>

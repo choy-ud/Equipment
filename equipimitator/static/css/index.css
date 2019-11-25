@@ -1,0 +1,40 @@
+.menu_type
+{
+    text-align:center;
+}
+.main
+{
+    width:1235px;
+    margin:auto;
+}
+.list_panel
+{
+    text-align:center;
+    width:1235px;
+}
+.list_container
+{
+    height:610px;
+    overflow:auto;
+}
+.list_item
+{
+    width:200px;
+    height:250px;
+    float:left;
+    margin-left:25px;
+    margin-right:10px;
+    overflow:auto;
+}
+.list_item_pic_panel
+{
+    width:80px;
+    height:100px;
+    margin:auto;
+}
+.list_item_pic
+{
+    width:80px;
+    height:80px;
+    border-radius:100%;
+}

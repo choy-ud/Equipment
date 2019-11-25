@@ -1,0 +1,77 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Equipment-Imitator</title>
+    <link rel="stylesheet" href="{% static 'css/yourIndex.css' %}" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="{% static 'JS/jquery.min.js' %}"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </head>
+    <body>
+        <nav class="navbar navbar-default">
+        <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index/"><span class="glyphicon glyphicon-book"/>&nbsp;Equipment-Imitator</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+          {% if request.user.is_authenticated %}
+            <li><a href="{% url 'yourImitator' %}"><span class="glyphicon glyphicon-cog"/>&nbsp;模拟</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="glyphicon glyphicon-user"/>&nbsp;{{request.user.username}}
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'yourIndex' %}"><span class=" glyphicon glyphicon-home"/>&nbsp;个人中心</a></li>
+                <li><a href="{% url 'login_out' %}"><span class="glyphicon glyphicon-off"/>&nbsp;退出</a></li>
+              </ul>
+            </li>         
+          {% else %}
+            <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"/>&nbsp;登录</a></li>
+            <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-list-alt"/>&nbsp;注册</a></li>
+          {% endif %}
+            <li><a href="{% url 'aboutAuthor' %}"><span class="glyphicon glyphicon-bookmark"/>&nbsp;关于作者</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+        </nav>
+        <main class="main">
+            <div class="panel panel-default">
+                <h3 style="text-align:center;">
+                    {{request.user.username}}的出装列表 &nbsp; 
+                </h3> 
+                
+                <div class="panel-body">
+                    {% for s in s_list %}
+                        <div class="panel panel-{{s.s_color}} set_panel">
+                            <div class="panel-heading">
+                                    <a href="/equipset/?s_no={{s.s_no}}">
+                                        <h4><div class="set_name"><span class="glyphicon glyphicon-paperclip"/>&nbsp;{{s.s_name}}</div>
+                                           {% if s.s_item1.e_no != 96 %}<a class="set_item" href="/equipitem/?e_no={{s.s_item1.e_no}}"><img class="set_item_pic" src="{{ s.s_item1.e_pic }}"></a>{% endif %}
+                                           {% if s.s_item2.e_no != 96 %}<a class="set_item" href="/equipitem/?e_no={{s.s_item2.e_no}}"><img class="set_item_pic" src="{{ s.s_item2.e_pic }}"></a>{% endif %}
+                                           {% if s.s_item3.e_no != 96 %}<a class="set_item" href="/equipitem/?e_no={{s.s_item3.e_no}}"><img class="set_item_pic" src="{{ s.s_item3.e_pic }}"></a>{% endif %}
+                                           {% if s.s_item4.e_no != 96 %}<a class="set_item" href="/equipitem/?e_no={{s.s_item4.e_no}}"><img class="set_item_pic" src="{{ s.s_item4.e_pic }}"></a>{% endif %}
+                                           {% if s.s_item5.e_no != 96 %}<a class="set_item" href="/equipitem/?e_no={{s.s_item5.e_no}}"><img class="set_item_pic" src="{{ s.s_item5.e_pic }}"></a>{% endif %}
+                                           {% if s.s_item6.e_no != 96 %}<a class="set_item" href="/equipitem/?e_no={{s.s_item6.e_no}}"><img class="set_item_pic" src="{{ s.s_item6.e_pic }}"></a>{% endif %}
+                                        </h4>
+                                    </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
